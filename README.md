@@ -80,7 +80,7 @@ Você pode realizar os testes na API usando um cliente HTTP como o Postman. Endp
 
 **Documentação da API**
 
-A documentação completa da API pode ser encontrada no Postman. [Clique aqui para abrir em uma nova guia](https://documenter.getpostman.com/view/36316654/2sA3XQgMcr)
+A documentação completa da API pode ser encontrada no Postman. [Clique aqui para acessar a documentação](https://documenter.getpostman.com/view/36316654/2sA3XQgMcr)
 
 
 
