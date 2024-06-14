@@ -19,6 +19,16 @@ class ProductController extends Controller
         $this->product = $product;
     }
 
+    public function index(): JsonResponse
+    {
+        $products = $this->product->orderByDesc('created_at')->paginate(10);
+
+        return response()->json([
+            'status' => true,
+            'produtos' => $products
+        ], 200);
+    }
+
     public function store(ProductRequest $request): JsonResponse
     {
         DB::beginTransaction();
