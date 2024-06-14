@@ -110,4 +110,37 @@ class ProductController extends Controller
         }
 
     }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        $product = $this->product->find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Produto não encontrado.'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $product->delete();
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Produto removido com sucesso!',
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Erro ao remover produto.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 }
