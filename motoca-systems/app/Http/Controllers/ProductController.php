@@ -75,4 +75,39 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function update(ProductRequest $request): JsonResponse
+    {
+        $product = $this->product->find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Produto não encontrado.'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $product->update($request->all());
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Produto atualizado com sucesso!',
+                'produto' => $product
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Erro ao atualizar produto',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
 }
