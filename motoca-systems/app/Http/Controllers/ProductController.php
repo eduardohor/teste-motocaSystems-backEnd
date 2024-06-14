@@ -2,9 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
+use App\Models\Product;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    //
+    protected $product;
+
+    public function __construct(Product $product)
+    {
+
+        $this->product = $product;
+    }
+
+    public function store(ProductRequest $request): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+            $product = $this->product->create([
+                'category_id' => $request->category_id,
+                'nome' => $request->nome,
+                'descricao' => $request->descricao,
+                'preco' => $request->preco
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Produto cadastrado com sucesso!',
+                'produtos' => $product
+            ], 201);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Erro ao cadastrar produto.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
