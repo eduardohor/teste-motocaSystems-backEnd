@@ -67,8 +67,9 @@ class CategoryController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Categoria não cadastrada'
-            ], 400);
+                'message' => 'Erro ao cadastrar categoria.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -100,9 +101,44 @@ class CategoryController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => false,
-                'mensagem' => 'Categoria não editada.'
-            ], 200);
+                'mensagem' => 'Erro ao atualizar categoria',
+                'error' => $e->getMessage()
+            ], 500);
         }
 
     }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        $category = $this->category->find($request->id);
+
+        if (!$category) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Categoria não encontrada.'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $category->delete();
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Categoria removida com sucesso!',
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Erro ao remover categoria.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
 }
