@@ -29,6 +29,23 @@ class CategoryController extends Controller
         ], 200);
     }
 
+    public function show(Request $request)
+    {
+        $category = $this->category->find($request->id);
+
+        if (!$category) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Categoria não encontrada.'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'categoria' => $category
+        ], 200);
+    }
+
     public function store(CategoryRequest $request): JsonResponse
     {
         DB::beginTransaction();
