@@ -19,6 +19,16 @@ class CategoryController extends Controller
         $this->category = $category;
     }
 
+    public function index(): JsonResponse
+    {
+        $categories = $this->category->orderByDesc('created_at')->paginate(10);
+
+        return response()->json([
+            'status' => true,
+            'categorias' => $categories
+        ], 200);
+    }
+
     public function store(CategoryRequest $request): JsonResponse
     {
         DB::beginTransaction();
