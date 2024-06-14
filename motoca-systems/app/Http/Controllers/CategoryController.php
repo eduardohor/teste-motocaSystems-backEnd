@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
     public function index(): JsonResponse
     {
-        $categories = $this->category->orderByDesc('created_at')->paginate(10);
+        $categories = $this->category->with('products')->orderByDesc('created_at')->paginate(10);
 
         return response()->json([
             'status' => true,
@@ -31,7 +31,7 @@ class CategoryController extends Controller
 
     public function show(Request $request)
     {
-        $category = $this->category->find($request->id);
+        $category = $this->category->with('products')->find($request->id);
 
         if (!$category) {
             return response()->json([

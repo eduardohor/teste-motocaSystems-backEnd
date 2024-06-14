@@ -21,7 +21,7 @@ class ProductController extends Controller
 
     public function index(): JsonResponse
     {
-        $products = $this->product->orderByDesc('created_at')->paginate(10);
+        $products = $this->product->with('category')->orderByDesc('created_at')->paginate(10);
 
         return response()->json([
             'status' => true,
@@ -31,7 +31,7 @@ class ProductController extends Controller
 
     public function show(Request $request)
     {
-        $product = $this->product->find($request->id);
+        $product = $this->product->with('category')->find($request->id);
 
         if (!$product) {
             return response()->json([
