@@ -29,6 +29,23 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function show(Request $request)
+    {
+        $product = $this->product->find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Produto não encontrado.'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'produto' => $product
+        ], 200);
+    }
+
     public function store(ProductRequest $request): JsonResponse
     {
         DB::beginTransaction();
