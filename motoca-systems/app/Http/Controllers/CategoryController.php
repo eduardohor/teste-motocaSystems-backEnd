@@ -71,4 +71,38 @@ class CategoryController extends Controller
             ], 400);
         }
     }
+
+    public function update(CategoryRequest $request): JsonResponse
+    {
+        $category = $this->category->find($request->id);
+
+        if (!$category) {
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Categoria não encontrada.'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $category->update($request->all());
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Categoria atualizada com sucesso!',
+                'categoria' => $category
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'mensagem' => 'Categoria não editada.'
+            ], 200);
+        }
+
+    }
 }
